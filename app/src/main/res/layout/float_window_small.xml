@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/small_window_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="#00000000"
+
+    android:paddingLeft="20px">
+  <TextView
+      android:visibility="gone"
+      android:id="@+id/percent"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:textColor="#ffffff" />
+
+  <ImageView
+      android:id="@+id/iv_ddr"
+      android:layout_width="80px"
+      android:layout_height="80px"
+      android:scaleType="fitXY"
+      android:src="@drawable/select_ddr"
+      android:layout_marginTop="10px"
+      app:layout_constraintTop_toBottomOf="@+id/iv_home"
+       />
+
+
+  <ImageView
+      android:id="@+id/iv_home"
+      android:layout_width="80px"
+      android:layout_height="80px"
+      android:alpha="10"
+      android:scaleType="fitXY"
+      android:src="@drawable/select_home"
+      android:layout_marginTop="10px"
+      app:layout_constraintTop_toBottomOf="@+id/iv_back"
+     />
+  <ImageView
+      android:id="@+id/iv_back"
+      android:layout_width="80px"
+      android:layout_height="80px"
+      android:scaleType="fitXY"
+      android:src="@drawable/select_back"
+     />
+
+</android.support.constraint.ConstraintLayout>
