@@ -8,14 +8,18 @@ import android.util.Log;
 import ns.com.batmanfloatwindow.service.FloatWindowService;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
+    private boolean isStart =false;
     @Override
     public void onReceive(Context context, Intent intent) {
         //后边的XXX.class就是要启动的服务
         Log.d("batmanfloatwindow", "onReceive: "+intent.getAction());
         String action =intent.getAction();
         if("android.intent.action.BOOT_COMPLETED".equals(action)) {
-            Intent service = new Intent(context, FloatWindowService.class);
-            context.startService(service);
+            if(!isStart) {
+                Intent service = new Intent(context, FloatWindowService.class);
+                context.startService(service);
+            }
+            isStart=true;
         }else if("ns.com.batmanfloatwindow.hide".equals(action)){
                 FloatWindowService.isShow=false;
         }else if("ns.com.batmanfloatwindow.show".equals(action)){

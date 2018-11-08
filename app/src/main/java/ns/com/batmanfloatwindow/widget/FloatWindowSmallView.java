@@ -196,8 +196,10 @@ public class FloatWindowSmallView extends LinearLayout implements CoreService.On
 
     // 更新小悬浮窗在屏幕中的位置
     private void updateViewPosition() {
-        mParams.x = (int) (xInScreen - xInView);
+//        mParams.x = (int) (xInScreen - xInView);
+        mParams.x = (int) (0);
         mParams.y = (int) (yInScreen - yInView);
+//        Log.d("updateViewPosition", "updateViewPosition: "+String.valueOf(mParams.y )+"    "+String.valueOf(mParams.x ));
         windowManager.updateViewLayout(this, mParams);
     }
 
