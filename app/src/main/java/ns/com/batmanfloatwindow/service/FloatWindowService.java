@@ -37,6 +37,17 @@ public class FloatWindowService extends Service  {
     }
 
     @Override
+    public void onCreate() {
+        Log.d("FloatWindowService", "onStartCommand: ");
+        if (timer == null) {
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new RefreshTask(), 0, 1000);
+        }
+        init_time();
+        super.onCreate();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 开启定时器，每隔0.5秒刷新一次
 //        handler.post(new Runnable() {
@@ -45,12 +56,12 @@ public class FloatWindowService extends Service  {
 //                MyWindowManager.createSmallWindow(getApplicationContext());
 //            }
 //        });
-        Log.d("FloatWindowService", "onStartCommand: ");
-        if (timer == null) {
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new RefreshTask(), 0, 1000);
-        }
-        init_time();
+//        Log.d("FloatWindowService", "onStartCommand: ");
+//        if (timer == null) {
+//            timer = new Timer();
+//            timer.scheduleAtFixedRate(new RefreshTask(), 0, 1000);
+//        }
+//        init_time();
         return super.onStartCommand(intent, flags, startId);
     }
 
