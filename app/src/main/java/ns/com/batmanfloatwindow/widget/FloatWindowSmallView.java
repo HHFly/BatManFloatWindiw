@@ -160,6 +160,7 @@ public class FloatWindowSmallView extends LinearLayout implements CoreService.On
                 // 手指按下时记录必要数据,纵坐标的值都需要减去状态栏高度
                 reSetDismisstime();
 //                xInView = event.getX();
+
                 yInView = event.getY();
 //                xDownInScreen = event.getRawX();
                 yDownInScreen = event.getRawY() - getStatusBarHeight();
@@ -196,7 +197,8 @@ public class FloatWindowSmallView extends LinearLayout implements CoreService.On
 
     // 更新小悬浮窗在屏幕中的位置
     private void updateViewPosition() {
-        mParams.x = (int) (xInScreen - xInView);
+//        mParams.x = (int) (xInScreen - xInView);
+        mParams.x = (int) (0);
         mParams.y = (int) (yInScreen - yInView);
         windowManager.updateViewLayout(this, mParams);
     }

@@ -50,8 +50,10 @@ public class MyWindowManager {
 
                 smallWindowParams.width = FloatWindowSmallView.viewWidth;
                 smallWindowParams.height = FloatWindowSmallView.viewHeight;
-                smallWindowParams.x = screenWidth;
-                smallWindowParams.y = screenHeight / 2;
+                smallWindowParams.gravity=Gravity.RIGHT|Gravity.TOP;
+
+//                smallWindowParams.x = screenWidth;
+//                smallWindowParams.y = screenHeight / 2;
             }
             smallWindow.setParams(smallWindowParams);
             windowManager.addView(smallWindow, smallWindowParams);
