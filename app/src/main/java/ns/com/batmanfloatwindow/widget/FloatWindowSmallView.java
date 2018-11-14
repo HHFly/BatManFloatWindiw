@@ -22,6 +22,7 @@ import java.util.List;
 
 import ns.com.batmanfloatwindow.R;
 import ns.com.batmanfloatwindow.bean.AppProcessInfo;
+import ns.com.batmanfloatwindow.service.CleanerService;
 import ns.com.batmanfloatwindow.service.CoreService;
 import ns.com.batmanfloatwindow.util.StorageUtil;
 

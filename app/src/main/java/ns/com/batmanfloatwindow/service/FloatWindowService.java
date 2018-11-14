@@ -2,8 +2,10 @@ package ns.com.batmanfloatwindow.service;
 
 import android.app.ActivityManager;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Handler;
@@ -21,9 +23,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ns.com.batmanfloatwindow.bean.AppProcessInfo;
+import ns.com.batmanfloatwindow.bean.CacheListItem;
+import ns.com.batmanfloatwindow.bean.SDCardInfo;
+import ns.com.batmanfloatwindow.util.StorageUtil;
 import ns.com.batmanfloatwindow.widget.MyWindowManager;
 
-public class FloatWindowService extends Service  {
+public class FloatWindowService extends Service implements CleanerService.OnActionListener {
 
     // 用于在线程中创建或移除悬浮窗
     private Handler handler = new Handler();
@@ -31,6 +36,9 @@ public class FloatWindowService extends Service  {
     // 定时器，定时进行检测当前应该创建还是移除悬浮窗
     private Timer timer;
     List<AppProcessInfo> mAppProcessInfos = new ArrayList<>();
+
+    private CleanerService mCleanerService;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -46,11 +54,14 @@ public class FloatWindowService extends Service  {
 //            }
 //        });
         Log.d("FloatWindowService", "onStartCommand: ");
+
         if (timer == null) {
             timer = new Timer();
             timer.scheduleAtFixedRate(new RefreshTask(), 0, 1000);
         }
         init_time();
+        //检测内部存储空间 小于2gb 自动清空
+        CheckBlock();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -61,6 +72,32 @@ public class FloatWindowService extends Service  {
         timer.cancel();
         timer = null;
         flag=false;
+        unbindService(mServiceConnection);
+    }
+
+    @Override
+    public void CleaneronScanStarted(Context context) {
+
+    }
+
+    @Override
+    public void CleaneronScanProgressUpdated(Context context, int current, int max) {
+
+    }
+
+    @Override
+    public void CleaneronScanCompleted(Context context, List<CacheListItem> apps) {
+                mCleanerService.cleanCache();
+    }
+
+    @Override
+    public void CleaneronCleanStarted(Context context) {
+
+    }
+
+    @Override
+    public void CleaneronCleanCompleted(Context context, long cacheSize) {
+
     }
 
 
@@ -91,6 +128,8 @@ public class FloatWindowService extends Service  {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        bindService(new Intent(getApplicationContext(), CleanerService.class),
+                                mServiceConnection, Context.BIND_AUTO_CREATE);
 //                        MyWindowManager.updateUsedPercent(getApplicationContext());
                     }
                 });
@@ -164,5 +203,44 @@ public class FloatWindowService extends Service  {
             names.add(ri.activityInfo.packageName);
         }
         return names;
+    }
+    private boolean mAlreadyScanned = false;
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mCleanerService = ((CleanerService.CleanerServiceBinder) service).getService();
+            mCleanerService.setOnActionListener(FloatWindowService.this);
+
+            //  updateStorageUsage();
+
+            if (!mCleanerService.isScanning() && !mAlreadyScanned) {
+                mCleanerService.scanCache();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mCleanerService.setOnActionListener(null);
+            mCleanerService = null;
+        }
+    };
+    private void CheckBlock(){
+        SDCardInfo mSDCardInfo = StorageUtil.getSDCardInfo();
+        SDCardInfo mSystemInfo = StorageUtil.getSystemSpaceInfo(getApplicationContext());
+
+        long nAvailaBlock;
+        long TotalBlocks;
+        if (mSDCardInfo != null) {
+            nAvailaBlock = mSDCardInfo.free + mSystemInfo.free;
+            TotalBlocks = mSDCardInfo.total + mSystemInfo.total;
+        } else {
+            nAvailaBlock = mSystemInfo.free;
+            TotalBlocks = mSystemInfo.total;
+        }
+
+        if(StorageUtil.IsLowStorage(TotalBlocks - nAvailaBlock)){
+            bindService(new Intent(getApplicationContext(), CleanerService.class),
+                    mServiceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 }

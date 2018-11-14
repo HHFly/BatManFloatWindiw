@@ -47,7 +47,17 @@ public class StorageUtil {
         } else
             return String.format("%d B", size);
     }
-
+    //小于2gb 返回true
+    public static Boolean IsLowStorage(long size) {
+        long kb = 1024;
+        long mb = kb * 1024;
+        long gb = mb * 1024;
+        long twogb =2*gb;
+        if (size <= twogb) {
+            return true;
+        }
+        return false;
+    }
     public static StorageSize convertStorageSize(long size) {
         long kb = 1024;
         long mb = kb * 1024;
