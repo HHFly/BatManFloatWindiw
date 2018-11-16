@@ -155,8 +155,11 @@ public class CleanerService extends Service {
             if (mOnActionListener != null) {
                 mOnActionListener.CleaneronScanCompleted(CleanerService.this, result);
             }
-
+            Log.d("FloatWindowService", "getCacheSize: "+mCacheSize);
             mIsScanning = false;
+            if (getCacheSize() > 0) {
+                cleanCache();
+            }
         }
     }
 
@@ -175,8 +178,7 @@ public class CleanerService extends Service {
 
 //            StatFs stat = new StatFs(Environment.getDataDirectory().getAbsolutePath());
 
-            try {
-//                mFreeStorageAndNotifyMethod.invoke(getPackageManager(),
+            //                mFreeStorageAndNotifyMethod.invoke(getPackageManager(),
 //                        (long) stat.getBlockCount() * (long) stat.getBlockSize(),
 //                        new IPackageDataObserver.Stub() {
 //                            @Override
@@ -186,20 +188,32 @@ public class CleanerService extends Service {
 //                            }
 //                        }
 //                );
-                for(int i=0;i<apps.size();i++){
-                    final int finalI = i;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            clearUserData(apps.get(finalI).getPackageName());
-                            countDownLatch.countDown();
-                        }
-                    }).start();
+            clearUserData(apps.get(5).getPackageName());
+//                for(int i=0;i<apps.size();i++){
+//                    final int finalI = i;
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            clearUserData(apps.get(finalI).getPackageName());
+//                            countDownLatch.countDown();
+//                        }
+//                    }).start();
+//                }
+//                countDownLatch.await();
+
+//                String msg = getString(R.string.cleaned, Formatter.formatShortFileSize(
+//                        CleanerService.this, getCacheSize()));
+
+//                Log.d(TAG, msg);
+
+//                Toast.makeText(CleanerService.this, msg, Toast.LENGTH_LONG).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    stopSelf();
                 }
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            }, 5000);
 
             return mCacheSize;
         }

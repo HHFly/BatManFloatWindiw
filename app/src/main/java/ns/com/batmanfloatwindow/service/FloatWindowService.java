@@ -128,8 +128,7 @@ public class FloatWindowService extends Service implements CleanerService.OnActi
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        bindService(new Intent(getApplicationContext(), CleanerService.class),
-                                mServiceConnection, Context.BIND_AUTO_CREATE);
+
 //                        MyWindowManager.updateUsedPercent(getApplicationContext());
                     }
                 });
@@ -238,8 +237,9 @@ public class FloatWindowService extends Service implements CleanerService.OnActi
             TotalBlocks = mSystemInfo.total;
         }
 
-        if(StorageUtil.IsLowStorage(TotalBlocks - nAvailaBlock)){
-            bindService(new Intent(getApplicationContext(), CleanerService.class),
+        if(StorageUtil.IsLowStorage(nAvailaBlock)){
+            Log.d("FloatWindowService", "startCleanerService: ");
+            getApplicationContext().bindService(new Intent(getApplicationContext(), CleanerService.class),
                     mServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
