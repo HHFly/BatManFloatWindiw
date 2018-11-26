@@ -45,6 +45,19 @@ public class FloatWindowService extends Service implements CleanerService.OnActi
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("FloatWindowService", "onStartCommand: ");
+        if (timer == null) {
+            timer = new Timer();
+            timer.scheduleAtFixedRate(new RefreshTask(), 0, 1000);
+        }
+        init_time();
+        //检测内部存储空间 小于2gb 自动清空
+        CheckBlock();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 开启定时器，每隔0.5秒刷新一次
 //        handler.post(new Runnable() {
@@ -53,15 +66,6 @@ public class FloatWindowService extends Service implements CleanerService.OnActi
 //                MyWindowManager.createSmallWindow(getApplicationContext());
 //            }
 //        });
-        Log.d("FloatWindowService", "onStartCommand: ");
-
-        if (timer == null) {
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new RefreshTask(), 0, 1000);
-        }
-        init_time();
-        //检测内部存储空间 小于2gb 自动清空
-        CheckBlock();
         return super.onStartCommand(intent, flags, startId);
     }
 
