@@ -16,8 +16,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         String action =intent.getAction();
         if("android.intent.action.BOOT_COMPLETED".equals(action)) {
             if(!isStart) {
-                Intent service = new Intent(context, FloatWindowService.class);
-                context.startService(service);
+//                Intent service = new Intent(context, FloatWindowService.class);
+//                context.startService(service);
             }
             isStart=true;
         }else if("ns.com.batmanfloatwindow.hide".equals(action)){
