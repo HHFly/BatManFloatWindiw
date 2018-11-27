@@ -178,7 +178,8 @@ public class CleanerService extends Service {
 
 //            StatFs stat = new StatFs(Environment.getDataDirectory().getAbsolutePath());
 
-            //                mFreeStorageAndNotifyMethod.invoke(getPackageManager(),
+            try {
+//                mFreeStorageAndNotifyMethod.invoke(getPackageManager(),
 //                        (long) stat.getBlockCount() * (long) stat.getBlockSize(),
 //                        new IPackageDataObserver.Stub() {
 //                            @Override
@@ -188,32 +189,34 @@ public class CleanerService extends Service {
 //                            }
 //                        }
 //                );
-            clearUserData(apps.get(5).getPackageName());
-//                for(int i=0;i<apps.size();i++){
-//                    final int finalI = i;
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            clearUserData(apps.get(finalI).getPackageName());
-//                            countDownLatch.countDown();
-//                        }
-//                    }).start();
-//                }
-//                countDownLatch.await();
+                for(int i=0;i<apps.size();i++){
+                    final int finalI = i;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            clearUserData(apps.get(finalI).getPackageName());
+                            countDownLatch.countDown();
+                        }
+                    }).start();
+                }
+                countDownLatch.await();
 
-//                String msg = getString(R.string.cleaned, Formatter.formatShortFileSize(
-//                        CleanerService.this, getCacheSize()));
+                String msg = getString(R.string.cleaned, Formatter.formatShortFileSize(
+                        CleanerService.this, getCacheSize()));
 
-//                Log.d(TAG, msg);
+                Log.d(TAG, msg);
 
 //                Toast.makeText(CleanerService.this, msg, Toast.LENGTH_LONG).show();
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    stopSelf();
-                }
-            }, 5000);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopSelf();
+                    }
+                }, 5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             return mCacheSize;
         }
