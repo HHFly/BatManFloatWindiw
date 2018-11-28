@@ -205,15 +205,9 @@ public class CleanerService extends Service {
                         CleanerService.this, getCacheSize()));
 
                 Log.d(TAG, msg);
-
+                stopSelf();
 //                Toast.makeText(CleanerService.this, msg, Toast.LENGTH_LONG).show();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        stopSelf();
-                    }
-                }, 5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
